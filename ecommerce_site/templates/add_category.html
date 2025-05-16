@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block title %}Add New Category - StyleShop{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1>Add New Category</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'categories' %}">Categories</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add Category</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="add-category-section">
+    <div class="container">
+        <div class="admin-wrapper" data-aos="fade-up">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Category Information</h2>
+                    <p>Fill in the details below to add a new category</p>
+                </div>
+                
+                <form method="POST" class="category-form">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label for="id_name">Category Name <span class="required">*</span></label>
+                            {{ form.name }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_description">Description</label>
+                            {{ form.description }}
+                            <small class="form-text text-muted">Provide a brief description of this category</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_image_url">Image URL</label>
+                            {{ form.image_url }}
+                            <small class="form-text text-muted">Enter a valid URL for the category image</small>
+                        </div>
+                        
+                        <div class="image-preview">
+                            <p>Image Preview:</p>
+                            <div class="preview-container">
+                                <img id="image-preview" src="" alt="Preview">
+                                <span class="no-preview">No image URL provided</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                {{ form.is_active }}
+                                <label class="custom-control-label" for="id_is_active">Active</label>
+                                <small class="form-text text-muted">Inactive categories won't be displayed on the site</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Add Category</button>
+                        <a href="{% url 'categories' %}" class="btn btn-outline">Cancel</a>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="admin-sidebar" data-aos="fade-left">
+                <div class="sidebar-widget">
+                    <h3>Adding a Category</h3>
+                    <div class="info-content">
+                        <p>Here are some tips for adding a new category:</p>
+                        <ul>
+                            <li>Choose a clear, descriptive name</li>
+                            <li>Write a concise category description</li>
+                            <li>Use a high-quality image that represents the category</li>
+                            <li>Keep the category active to display it on the site</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="sidebar-widget">
+                    <h3>Category Organization</h3>
+                    <div class="info-content">
+                        <p>Well-organized categories help customers find products more easily:</p>
+                        <ul>
+                            <li>Create broad categories for main product types</li>
+                            <li>Be consistent with naming conventions</li>
+                            <li>Consider the customer's perspective when organizing</li>
+                            <li>Use clear, attractive images to represent each category</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="sidebar-widget">
+                    <h3>Current Categories</h3>
+                    <div class="info-content">
+                        <ul class="category-quick-list">
+                            {% for category in categories_list %}
+                            <li>
+                                <a href="{% url 'category_detail' slug=category.slug %}">{{ category.name }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add classes to form fields
+        const textInputs = [
+            'id_name', 'id_description', 'id_image_url'
+        ];
+        
+        textInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.classList.add('form-control');
+            }
+        });
+        
+        // Customize switch input
+        const activeInput = document.getElementById('id_is_active');
+        if (activeInput) {
+            activeInput.classList.add('custom-control-input');
+        }
+        
+        // Image URL preview
+        const imageUrlInput = document.getElementById('id_image_url');
+        const imagePreview = document.getElementById('image-preview');
+        const noPreview = document.querySelector('.no-preview');
+        
+        if (imageUrlInput && imagePreview && noPreview) {
+            // Check initial value
+            if (imageUrlInput.value.trim()) {
+                imagePreview.src = imageUrlInput.value;
+                imagePreview.style.display = 'block';
+                noPreview.style.display = 'none';
+            } else {
+                imagePreview.style.display = 'none';
+                noPreview.style.display = 'block';
+            }
+            
+            // Update on input
+            imageUrlInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    imagePreview.src = this.value;
+                    imagePreview.style.display = 'block';
+                    noPreview.style.display = 'none';
+                } else {
+                    imagePreview.style.display = 'none';
+                    noPreview.style.display = 'block';
+                }
+            });
+            
+            // Handle image load error
+            imagePreview.addEventListener('error', function() {
+                this.style.display = 'none';
+                noPreview.style.display = 'block';
+                noPreview.textContent = 'Invalid image URL';
+            });
+        }
+        
+        // Form validation
+        const form = document.querySelector('.category-form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                // Name is required
+                const nameInput = document.getElementById('id_name');
+                if (nameInput && !nameInput.value.trim()) {
+                    nameInput.classList.add('is-invalid');
+                    isValid = false;
+                } else if (nameInput) {
+                    nameInput.classList.remove('is-invalid');
+                }
+                
+                // Image URL validation if provided
+                const imageUrlInput = document.getElementById('id_image_url');
+                if (imageUrlInput && imageUrlInput.value.trim()) {
+                    // Simple URL validation
+                    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+                    if (!urlPattern.test(imageUrlInput.value.trim())) {
+                        imageUrlInput.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        imageUrlInput.classList.remove('is-invalid');
+                    }
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    
+                    // Show error message
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'alert alert-danger';
+                    errorMessage.textContent = 'Please correct the errors in the form.';
+                    form.insertBefore(errorMessage, form.firstChild);
+                    
+                    // Scroll to top
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                    
+                    // Remove message after 5 seconds
+                    setTimeout(() => {
+                        errorMessage.remove();
+                    }, 5000);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

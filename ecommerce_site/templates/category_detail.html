@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - StyleShop{% endblock %}
+
+{% block content %}
+<section class="page-header category-header" style="background-image: url('{{ category.image_url|default:'https://pixabay.com/get/g6b0b19b6095abd5b147da3ed98f75b8be3e60bb9f4b08a1d58c0ded5e8c7a16c499f66d3c13b3e6f2fe5fc84c0c2a18a1ea9cdf172fdf0c022a7a01fecfe2d52_1280.jpg' }}');">
+    <div class="container">
+        <div class="page-header-content text-center">
+            <h1 data-aos="fade-up">{{ category.name }}</h1>
+            <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="100">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'categories' %}">Categories</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+                </ol>
+            </nav>
+            
+            {% if category.description %}
+            <div class="category-description" data-aos="fade-up" data-aos-delay="200">
+                <p>{{ category.description }}</p>
+            </div>
+            {% endif %}
+            
+            {% if user.is_staff %}
+            <div class="admin-actions" data-aos="fade-up" data-aos-delay="300">
+                <a href="{% url 'edit_category' category_id=category.id %}" class="btn btn-sm btn-outline">Edit Category</a>
+                <a href="{% url 'add_product' %}?category={{ category.id }}" class="btn btn-sm btn-primary">Add Product</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="products-section">
+    <div class="container">
+        <div class="shop-layout">
+            <div class="shop-sidebar" data-aos="fade-right">
+                <div class="sidebar-widget">
+                    <h3>Filter by Price</h3>
+                    <div class="price-filter">
+                        <div class="price-slider-container">
+                            <div class="price-slider"></div>
+                        </div>
+                        <div class="price-inputs">
+                            <input type="text" id="min-price" placeholder="Min">
+                            <span>-</span>
+                            <input type="text" id="max-price" placeholder="Max">
+                        </div>
+                        <button id="filter-price-btn" class="btn btn-sm btn-primary">Apply</button>
+                    </div>
+                </div>
+                
+                <div class="sidebar-widget">
+                    <h3>Product Status</h3>
+                    <div class="filter-checkboxes">
+                        <div class="form-group">
+                            <input type="checkbox" id="filter-sale">
+                            <label for="filter-sale">On Sale</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="filter-new">
+                            <label for="filter-new">New Arrival</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="filter-featured">
+                            <label for="filter-featured">Featured</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-widget">
+                    <h3>Browse Other Categories</h3>
+                    <ul class="category-list">
+                        {% for cat in categories_list %}
+                        {% if cat.id != category.id %}
+                        <li>
+                            <a href="{% url 'category_detail' slug=cat.slug %}">{{ cat.name }}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="shop-content" data-aos="fade-up">
+                <div class="shop-topbar">
+                    <div class="shop-filter-toggle">
+                        <button class="filter-toggle-btn"><i class="fas fa-filter"></i> Filter</button>
+                    </div>
+                    
+                    <div class="shop-result-count">
+                        <p>Showing {{ products.start_index }}–{{ products.end_index }} of {{ paginator.count }} results</p>
+                    </div>
+                    
+                    <div class="shop-sort">
+                        <form id="sort-form" action="{% url 'category_detail' slug=category.slug %}" method="GET">
+                            <select name="sort" id="sort-select" onchange="document.getElementById('sort-form').submit()">
+                                <option value="" {% if sort_by == '' %}selected{% endif %}>Default Sorting</option>
+                                <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                                <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                                <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="products-grid">
+                    {% for product in products %}
+                    <div class="product-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
+                        <div class="product-card-img">
+                            {% if product.is_new %}
+                            <span class="product-badge new">New</span>
+                            {% endif %}
+                            {% if product.is_on_sale %}
+                            <span class="product-badge sale">Sale</span>
+                            {% endif %}
+                            <a href="{% url 'product_detail' slug=product.slug %}">
+                                <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                            </a>
+                            <div class="product-actions">
+                                <form action="{% url 'add_to_wishlist' product_id=product.id %}" method="POST" class="ajax-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn wishlist-btn" title="Add to Wishlist">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </form>
+                                <form action="{% url 'cart_add' product_id=product.id %}" method="POST" class="ajax-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="action-btn cart-btn" title="Add to Cart">
+                                        <i class="fas fa-shopping-bag"></i>
+                                    </button>
+                                </form>
+                                <a href="{% url 'product_detail' slug=product.slug %}" class="action-btn view-btn" title="Quick View">
+                                    <i class="far fa-eye"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="product-card-content">
+                            <h3><a href="{% url 'product_detail' slug=product.slug %}">{{ product.name }}</a></h3>
+                            <div class="product-price">
+                                {% if product.discount_price %}
+                                <span class="price">${{ product.discount_price }}</span>
+                                <span class="old-price">${{ product.price }}</span>
+                                {% else %}
+                                <span class="price">${{ product.price }}</span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if user.is_staff %}
+                            <div class="admin-actions">
+                                <a href="{% url 'edit_product' product_id=product.id %}" class="btn btn-sm btn-outline">Edit</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="no-results">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No Products Found</h3>
+                        <p>There are no products in this category yet.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                {% if products.has_other_pages %}
+                <nav aria-label="Page navigation" class="pagination-container">
+                    <ul class="pagination">
+                        {% if products.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ products.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for i in products.paginator.page_range %}
+                            {% if products.number == i %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ i }}</span>
+                            </li>
+                            {% elif i > products.number|add:'-3' and i < products.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ i }}">{{ i }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if products.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ products.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if products %}
+<section class="category-banner">
+    <div class="container">
+        <div class="banner-wrapper" data-aos="fade-up">
+            <div class="banner-content">
+                <h2>Discover More in {{ category.name }}</h2>
+                <p>Explore our collection and find what you're looking for.</p>
+                <a href="{% url 'product_list' %}" class="btn btn-outline">View All Products</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile filter toggle
+        const filterToggleBtn = document.querySelector('.filter-toggle-btn');
+        const shopSidebar = document.querySelector('.shop-sidebar');
+        
+        if (filterToggleBtn && shopSidebar) {
+            filterToggleBtn.addEventListener('click', function() {
+                shopSidebar.classList.toggle('active');
+            });
+        }
+        
+        // AJAX form handling for wishlist and cart
+        const ajaxForms = document.querySelectorAll('.ajax-form');
+        ajaxForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Create FormData object
+                const formData = new FormData(this);
+                
+                // Get the form action URL
+                const url = this.getAttribute('action');
+                
+                // Send AJAX request
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        // Show success message
+                        const message = document.createElement('div');
+                        message.className = 'alert alert-success';
+                        message.textContent = 'Item added successfully!';
+                        
+                        // Append to messages container
+                        const messagesContainer = document.querySelector('.messages-container .container');
+                        if (messagesContainer) {
+                            messagesContainer.appendChild(message);
+                            
+                            // Remove message after 3 seconds
+                            setTimeout(() => {
+                                message.remove();
+                            }, 3000);
+                        }
+                        
+                        // Update cart count if available
+                        if (data.cart_total !== undefined) {
+                            const cartCount = document.querySelector('.cart-count');
+                            if (cartCount) {
+                                cartCount.textContent = data.cart_total;
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+        
+        // Filter by price functionality
+        const filterPriceBtn = document.getElementById('filter-price-btn');
+        if (filterPriceBtn) {
+            filterPriceBtn.addEventListener('click', function() {
+                const minPrice = document.getElementById('min-price').value;
+                const maxPrice = document.getElementById('max-price').value;
+                
+                // Create URL with current parameters
+                let url = new URL(window.location.href);
+                let params = new URLSearchParams(url.search);
+                
+                // Update price parameters
+                if (minPrice) params.set('min_price', minPrice);
+                if (maxPrice) params.set('max_price', maxPrice);
+                
+                // Redirect to filtered URL
+                window.location.href = `${url.pathname}?${params.toString()}`;
+            });
+        }
+        
+        // Product status filter checkboxes
+        const statusCheckboxes = document.querySelectorAll('.filter-checkboxes input[type="checkbox"]');
+        statusCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Create URL with current parameters
+                let url = new URL(window.location.href);
+                let params = new URLSearchParams(url.search);
+                
+                if (this.id === 'filter-sale') {
+                    if (this.checked) {
+                        params.set('on_sale', 'true');
+                    } else {
+                        params.delete('on_sale');
+                    }
+                } else if (this.id === 'filter-new') {
+                    if (this.checked) {
+                        params.set('new', 'true');
+                    } else {
+                        params.delete('new');
+                    }
+                } else if (this.id === 'filter-featured') {
+                    if (this.checked) {
+                        params.set('featured', 'true');
+                    } else {
+                        params.delete('featured');
+                    }
+                }
+                
+                // Redirect to filtered URL
+                window.location.href = `${url.pathname}?${params.toString()}`;
+            });
+            
+            // Check the boxes based on URL params
+            let params = new URLSearchParams(window.location.search);
+            if (checkbox.id === 'filter-sale' && params.get('on_sale') === 'true') {
+                checkbox.checked = true;
+            } else if (checkbox.id === 'filter-new' && params.get('new') === 'true') {
+                checkbox.checked = true;
+            } else if (checkbox.id === 'filter-featured' && params.get('featured') === 'true') {
+                checkbox.checked = true;
+            }
+        });
+        
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,564 @@
+{% extends 'base.html' %}
+
+{% block title %}StyleShop - Your Fashion Destination{% endblock %}
+
+{% block content %}
+<!-- Hero Banner Section -->
+<section class="hero-banner">
+    <div class="hero-slider">
+        <div class="hero-slide">
+            <div class="hero-slide-bg" style="background-image: url('https://pixabay.com/get/g88b737913b072581f8f7a79d0543bb04584aeb8f81e610097bdcbbf81f617396d18b8035e1963ede9f024161adfed9f0696d06b50c5b7cb1cefb2a91433c4211_1280.jpg');">
+                <div class="container">
+                    <div class="hero-content" data-aos="fade-right">
+                        <h1>Summer Collection 2023</h1>
+                        <p>Discover the latest trends for this season</p>
+                        <a href="{% url 'product_list' %}" class="btn btn-primary">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-slide">
+            <div class="hero-slide-bg" style="background-image: url('https://pixabay.com/get/g29ef8d579064b8d600e06f976d6d324cbd366cde47507a9d0db37401beacca8743b71a72d72a7ab08682301a21df07207eb6f7a8b5719c12e1e41354bff92e76_1280.jpg');">
+                <div class="container">
+                    <div class="hero-content" data-aos="fade-right">
+                        <h1>New Arrivals</h1>
+                        <p>Be the first to shop our latest collections</p>
+                        <a href="{% url 'new_arrivals' %}" class="btn btn-primary">Explore Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hero-dots">
+        <span class="hero-dot active" data-slide="0"></span>
+        <span class="hero-dot" data-slide="1"></span>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="features">
+            <div class="feature-item" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Free Shipping</h3>
+                    <p>On all orders over $50</p>
+                </div>
+            </div>
+            
+            <div class="feature-item" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Easy Returns</h3>
+                    <p>30-day return policy</p>
+                </div>
+            </div>
+            
+            <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Secure Payment</h3>
+                    <p>100% secure checkout</p>
+                </div>
+            </div>
+            
+            <div class="feature-item" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>24/7 Support</h3>
+                    <p>Dedicated support team</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section">
+    <div class="container">
+        <div class="section-header text-center" data-aos="fade-up">
+            <h2>Shop by Categories</h2>
+            <p>Find exactly what you're looking for</p>
+        </div>
+        
+        <div class="categories-grid">
+            {% for category in categories_list %}
+                {% if forloop.counter <= 6 %}
+                <div class="category-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
+                    <a href="{% url 'category_detail' slug=category.slug %}">
+                        <div class="category-card-img">
+                            <img src="{{ category.image_url|default:'https://pixabay.com/get/g6b0b19b6095abd5b147da3ed98f75b8be3e60bb9f4b08a1d58c0ded5e8c7a16c499f66d3c13b3e6f2fe5fc84c0c2a18a1ea9cdf172fdf0c022a7a01fecfe2d52_1280.jpg' }}" alt="{{ category.name }}">
+                        </div>
+                        <div class="category-card-content">
+                            <h3>{{ category.name }}</h3>
+                            <span class="category-card-link">Shop Now <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="products-section">
+    <div class="container">
+        <div class="section-header text-center" data-aos="fade-up">
+            <h2>Featured Products</h2>
+            <p>Handpicked by our experts just for you</p>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in featured_products %}
+            <div class="product-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
+                <div class="product-card-img">
+                    {% if product.is_new %}
+                    <span class="product-badge new">New</span>
+                    {% endif %}
+                    {% if product.is_on_sale %}
+                    <span class="product-badge sale">Sale</span>
+                    {% endif %}
+                    <a href="{% url 'product_detail' slug=product.slug %}">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                    </a>
+                    <div class="product-actions">
+                        <form action="{% url 'add_to_wishlist' product_id=product.id %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn wishlist-btn" title="Add to Wishlist">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </form>
+                        <form action="{% url 'cart_add' product_id=product.id %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="action-btn cart-btn" title="Add to Cart">
+                                <i class="fas fa-shopping-bag"></i>
+                            </button>
+                        </form>
+                        <a href="{% url 'product_detail' slug=product.slug %}" class="action-btn view-btn" title="Quick View">
+                            <i class="far fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="{% url 'product_detail' slug=product.slug %}">{{ product.name }}</a></h3>
+                    <div class="product-price">
+                        {% if product.discount_price %}
+                        <span class="price">$ {{ product.discount_price }}</span>
+                        <span class="old-price">$ {{ product.price }}</span>
+                        {% else %}
+                        <span class="price">$ {{ product.price }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'featured_products' %}" class="btn btn-outline">View All Featured Products</a>
+        </div>
+    </div>
+</section>
+
+<!-- Banner Section -->
+<section class="banner-section">
+    <div class="container">
+        <div class="banner-wrapper">
+            <div class="banner-item" data-aos="fade-right">
+                <div class="banner-bg" style="background-image: url('https://pixabay.com/get/gfc4b29172fe9b83522a9dea99bed01119fb4305938dbd1a86f3416231a88dbd1ed1114852592911a965b13f70f3bee4c5575348fa397d6c0848186ab78f97984_1280.jpg');"></div>
+                <div class="banner-content">
+                    <h3>Summer Sale</h3>
+                    <h2>Up to 70% Off</h2>
+                    <p>On selected items</p>
+                    <a href="{% url 'on_sale_products' %}" class="btn btn-white">Shop Now</a>
+                </div>
+            </div>
+            
+            <div class="banner-item" data-aos="fade-left">
+                <div class="banner-bg" style="background-image: url('https://pixabay.com/get/g3eeeea852b8818327f02c5742d6acb5d95cf113f2ce484a1c46e606b05ac98768f76aee7b0b2555da80501b86daf94166a9b0beeba238e06a488e1e80dc63267_1280.jpg');"></div>
+                <div class="banner-content">
+                    <h3>New Collection</h3>
+                    <h2>Be Trendy</h2>
+                    <p>Discover new styles</p>
+                    <a href="{% url 'new_arrivals' %}" class="btn btn-white">Explore</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Best Sellers Section -->
+<section class="products-section">
+    <div class="container">
+        <div class="section-header text-center" data-aos="fade-up">
+            <h2>Best Sellers</h2>
+            <p>Our most popular products based on sales</p>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in bestsellers %}
+            <div class="product-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
+                <div class="product-card-img">
+                    {% if product.is_new %}
+                    <span class="product-badge new">New</span>
+                    {% endif %}
+                    {% if product.is_on_sale %}
+                    <span class="product-badge sale">Sale</span>
+                    {% endif %}
+                    <a href="{% url 'product_detail' slug=product.slug %}">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                    </a>
+                    <div class="product-actions">
+                        <form action="{% url 'add_to_wishlist' product_id=product.id %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn wishlist-btn" title="Add to Wishlist">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </form>
+                        <form action="{% url 'cart_add' product_id=product.id %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="action-btn cart-btn" title="Add to Cart">
+                                <i class="fas fa-shopping-bag"></i>
+                            </button>
+                        </form>
+                        <a href="{% url 'product_detail' slug=product.slug %}" class="action-btn view-btn" title="Quick View">
+                            <i class="far fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="{% url 'product_detail' slug=product.slug %}">{{ product.name }}</a></h3>
+                    <div class="product-price">
+                        {% if product.discount_price %}
+                        <span class="price">$ {{ product.discount_price }}</span>
+                        <span class="old-price">$ {{ product.price }}</span>
+                        {% else %}
+                        <span class="price">$ {{ product.price }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'best_sellers' %}" class="btn btn-outline">View All Best Sellers</a>
+        </div>
+    </div>
+</section>
+
+<!-- New Arrivals Section -->
+<section class="products-section bg-light">
+    <div class="container">
+        <div class="section-header text-center" data-aos="fade-up">
+            <h2>New Arrivals</h2>
+            <p>The latest additions to our collection</p>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in new_arrivals %}
+            <div class="product-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
+                <div class="product-card-img">
+                    <span class="product-badge new">New</span>
+                    {% if product.is_on_sale %}
+                    <span class="product-badge sale">Sale</span>
+                    {% endif %}
+                    <a href="{% url 'product_detail' slug=product.slug %}">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                    </a>
+                    <div class="product-actions">
+                        <form action="{% url 'add_to_wishlist' product_id=product.id %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn wishlist-btn" title="Add to Wishlist">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </form>
+                        <form action="{% url 'cart_add' product_id=product.id %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="action-btn cart-btn" title="Add to Cart">
+                                <i class="fas fa-shopping-bag"></i>
+                            </button>
+                        </form>
+                        <a href="{% url 'product_detail' slug=product.slug %}" class="action-btn view-btn" title="Quick View">
+                            <i class="far fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="{% url 'product_detail' slug=product.slug %}">{{ product.name }}</a></h3>
+                    <div class="product-price">
+                        {% if product.discount_price %}
+                        <span class="price">$ {{ product.discount_price }}</span>
+                        <span class="old-price">$ {{ product.price }}</span>
+                        {% else %}
+                        <span class="price">$ {{ product.price }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'new_arrivals' %}" class="btn btn-outline">View All New Arrivals</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+    <div class="container">
+        <div class="section-header text-center" data-aos="fade-up">
+            <h2>What Our Customers Say</h2>
+            <p>Real experiences from satisfied shoppers</p>
+        </div>
+        
+        <div class="testimonials-slider">
+            <div class="testimonial-item" data-aos="fade-up">
+                <div class="testimonial-content">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"I absolutely love shopping at StyleShop! The quality of the clothes is amazing, and their customer service is top-notch. Will definitely keep coming back!"</p>
+                    <div class="testimonial-author">
+                        <h4>Emily Johnson</h4>
+                        <p>Loyal Customer</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-item" data-aos="fade-up" data-aos-delay="200">
+                <div class="testimonial-content">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"The delivery was super fast, and the clothes fit perfectly! I appreciate the detailed size charts and the easy return process. Highly recommend!"</p>
+                    <div class="testimonial-author">
+                        <h4>Michael Brown</h4>
+                        <p>New Customer</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-item" data-aos="fade-up" data-aos-delay="400">
+                <div class="testimonial-content">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p>"StyleShop has become my go-to for fashion needs. Their collection is always up-to-date with the latest trends, and the prices are reasonable. Love it!"</p>
+                    <div class="testimonial-author">
+                        <h4>Sophia Martinez</h4>
+                        <p>Regular Customer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Instagram Feed Section -->
+<section class="instagram-section">
+    <div class="container">
+        <div class="section-header text-center" data-aos="fade-up">
+            <h2>Follow Us on Instagram</h2>
+            <p>@styleshop_official</p>
+        </div>
+        
+        <div class="instagram-grid">
+            <a href="#" class="instagram-item" data-aos="fade-up">
+                <img src="https://pixabay.com/get/ga2f419571e3f555789bb20b99d4b706fe468d2766227256548764b09317d7b8b6dbaa646f9b92a3a8c775c37d86bbc5291dc23745f281a124a1f07eacb0d8fe4_1280.jpg" alt="Instagram Post">
+                <div class="instagram-overlay">
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </a>
+            <a href="#" class="instagram-item" data-aos="fade-up" data-aos-delay="100">
+                <img src="https://pixabay.com/get/gbd120bda8694530c701d62a3289e7752923ae294fdf7c946c140325e2f2a1fc5981bc608a9e2a122ce3ab285ad13c131_1280.jpg" alt="Instagram Post">
+                <div class="instagram-overlay">
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </a>
+            <a href="#" class="instagram-item" data-aos="fade-up" data-aos-delay="200">
+                <img src="https://pixabay.com/get/g8d904a3fc0749668bccdcaab1a36e15b6cd9f5690ab8d4d25b91bcf316cac30548d1c32c80fefb2bb66ba85f3109eb4987ff8a271c1cfe745c97f69209fab876_1280.jpg" alt="Instagram Post">
+                <div class="instagram-overlay">
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </a>
+            <a href="#" class="instagram-item" data-aos="fade-up" data-aos-delay="300">
+                <img src="https://pixabay.com/get/g69bb7696e5e2c0937cfde079da5caa8eb5a7d621a059b057099500a3f6102a0b4f444dc91cb80b4d97e20f5c25d875d7cdcf3e63c0e253e35b69485471bd776d_1280.jpg" alt="Instagram Post">
+                <div class="instagram-overlay">
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </a>
+            <a href="#" class="instagram-item" data-aos="fade-up" data-aos-delay="400">
+                <img src="https://pixabay.com/get/gb756e6395db27b496dad47d172026976f6837e712abacc70f24f48924f031c9b0e46e81d904b0ab0fb1cffb6edc6af0d832ba6b307016ef5a042d89951bf3394_1280.jpg" alt="Instagram Post">
+                <div class="instagram-overlay">
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </a>
+            <a href="#" class="instagram-item" data-aos="fade-up" data-aos-delay="500">
+                <img src="https://pixabay.com/get/g154b609164d8ecec695c1d87f9ed8d0474a24211ac1198f978c136fad957d6f08eb4d9f35735994a579e4c48374a845319fc042c5338c4458f7d71a49e11a1f8_1280.jpg" alt="Instagram Post">
+                <div class="instagram-overlay">
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Brands Section -->
+<section class="brands-section">
+    <div class="container">
+        <div class="brands-slider">
+            <div class="brand-item" data-aos="fade-up">
+                <svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="35" font-family="Montserrat" font-weight="bold" font-size="22" fill="#333">BRAND 1</text>
+                </svg>
+            </div>
+            <div class="brand-item" data-aos="fade-up" data-aos-delay="100">
+                <svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="35" font-family="Montserrat" font-weight="bold" font-size="22" fill="#333">BRAND 2</text>
+                </svg>
+            </div>
+            <div class="brand-item" data-aos="fade-up" data-aos-delay="200">
+                <svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="35" font-family="Montserrat" font-weight="bold" font-size="22" fill="#333">BRAND 3</text>
+                </svg>
+            </div>
+            <div class="brand-item" data-aos="fade-up" data-aos-delay="300">
+                <svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="35" font-family="Montserrat" font-weight="bold" font-size="22" fill="#333">BRAND 4</text>
+                </svg>
+            </div>
+            <div class="brand-item" data-aos="fade-up" data-aos-delay="400">
+                <svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="35" font-family="Montserrat" font-weight="bold" font-size="22" fill="#333">BRAND 5</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hero slider functionality
+        const slides = document.querySelectorAll('.hero-slide');
+        const dots = document.querySelectorAll('.hero-dot');
+        let currentSlide = 0;
+        
+        function showSlide(index) {
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.style.display = 'none';
+            });
+            
+            // Remove active class from all dots
+            dots.forEach(dot => {
+                dot.classList.remove('active');
+            });
+            
+            // Show the current slide and activate dot
+            slides[index].style.display = 'block';
+            dots[index].classList.add('active');
+        }
+        
+        // Initialize slider
+        showSlide(currentSlide);
+        
+        // Auto slide change
+        setInterval(function() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }, 5000);
+        
+        // Click on dots to change slide
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', function() {
+                currentSlide = index;
+                showSlide(currentSlide);
+            });
+        });
+        
+        // AJAX form handling
+        const ajaxForms = document.querySelectorAll('.ajax-form');
+        ajaxForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Create FormData object
+                const formData = new FormData(this);
+                
+                // Get the form action URL
+                const url = this.getAttribute('action');
+                
+                // Send AJAX request
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        // Show success message
+                        const message = document.createElement('div');
+                        message.className = 'alert alert-success';
+                        message.textContent = 'Item added successfully!';
+                        
+                        // Append to messages container
+                        const messagesContainer = document.querySelector('.messages-container .container');
+                        if (messagesContainer) {
+                            messagesContainer.appendChild(message);
+                            
+                            // Remove message after 3 seconds
+                            setTimeout(() => {
+                                message.remove();
+                            }, 3000);
+                        }
+                        
+                        // Update cart count if available
+                        if (data.cart_total !== undefined) {
+                            const cartCount = document.querySelector('.cart-count');
+                            if (cartCount) {
+                                cartCount.textContent = data.cart_total;
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

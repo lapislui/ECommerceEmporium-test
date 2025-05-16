@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Change Email - StyleShop{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1>Change Email</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'profile' %}">My Account</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Change Email</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="change-email-section">
+    <div class="container">
+        <div class="account-wrapper">
+            <div class="account-sidebar" data-aos="fade-right">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <h3>{{ user.get_full_name|default:user.username }}</h3>
+                        <p>{{ user.email }}</p>
+                    </div>
+                </div>
+                
+                <ul class="account-menu">
+                    <li><a href="{% url 'profile' %}"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li><a href="{% url 'orders' %}"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                    <li><a href="{% url 'wishlist' %}"><i class="fas fa-heart"></i> My Wishlist</a></li>
+                    <li><a href="{% url 'edit_profile' %}"><i class="fas fa-edit"></i> Edit Profile</a></li>
+                    <li class="active"><a href="{% url 'change_email' %}"><i class="fas fa-envelope"></i> Change Email</a></li>
+                    <li><a href="{% url 'password_change' %}"><i class="fas fa-lock"></i> Change Password</a></li>
+                    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+            
+            <div class="account-content" data-aos="fade-left">
+                <div class="section-header">
+                    <h2>Change Email Address</h2>
+                </div>
+                
+                <div class="account-info-box">
+                    <div class="info-box-header">
+                        <i class="fas fa-info-circle"></i>
+                        <h3>Current Email</h3>
+                    </div>
+                    <div class="info-box-content">
+                        <p>Your current email address is <strong>{{ user.email }}</strong></p>
+                        <p>When you change your email address, we'll send a verification email to your new address.</p>
+                    </div>
+                </div>
+                
+                <form method="POST" class="change-email-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="email">New Email Address</label>
+                        <input type="email" name="email" id="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="security-verification">
+                        <h3>Security Verification</h3>
+                        <p>To protect your account, please enter your password to confirm this change.</p>
+                        
+                        <div class="form-group">
+                            <label for="password">Current Password</label>
+                            <input type="password" name="password" id="password" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Change Email</button>
+                        <a href="{% url 'profile' %}" class="btn btn-outline">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation
+        const form = document.querySelector('.change-email-form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                // Email validation
+                const emailInput = document.getElementById('email');
+                const emailValue = emailInput.value.trim();
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                if (!emailValue || !emailPattern.test(emailValue)) {
+                    emailInput.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    emailInput.classList.remove('is-invalid');
+                }
+                
+                // Password validation
+                const passwordInput = document.getElementById('password');
+                if (!passwordInput.value.trim()) {
+                    passwordInput.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    passwordInput.classList.remove('is-invalid');
+                }
+                
+                // Current email check
+                if (emailValue === '{{ user.email }}') {
+                    emailInput.classList.add('is-invalid');
+                    isValid = false;
+                    
+                    // Show error for same email
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'alert alert-danger';
+                    errorMessage.textContent = 'The new email address must be different from your current one.';
+                    form.insertBefore(errorMessage, form.firstChild);
+                    
+                    setTimeout(() => {
+                        errorMessage.remove();
+                    }, 5000);
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

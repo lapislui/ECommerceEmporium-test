@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title %}Shop by Categories - StyleShop{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1>Shop by Categories</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Categories</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="categories-section">
+    <div class="container">
+        <div class="categories-wrapper" data-aos="fade-up">
+            <div class="categories-header">
+                <div class="search-bar">
+                    <input type="text" id="category-search" placeholder="Search categories...">
+                    <button type="button"><i class="fas fa-search"></i></button>
+                </div>
+                
+                {% if user.is_staff %}
+                <div class="admin-actions">
+                    <a href="{% url 'add_category' %}" class="btn btn-primary">Add New Category</a>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="categories-grid">
+                {% for category in categories %}
+                <div class="category-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
+                    <a href="{% url 'category_detail' slug=category.slug %}">
+                        <div class="category-card-img">
+                            <img src="{{ category.image_url|default:'https://pixabay.com/get/g6b0b19b6095abd5b147da3ed98f75b8be3e60bb9f4b08a1d58c0ded5e8c7a16c499f66d3c13b3e6f2fe5fc84c0c2a18a1ea9cdf172fdf0c022a7a01fecfe2d52_1280.jpg' }}" alt="{{ category.name }}">
+                        </div>
+                        <div class="category-card-content">
+                            <h3>{{ category.name }}</h3>
+                            {% if category.description %}
+                            <p>{{ category.description|truncatechars:100 }}</p>
+                            {% endif %}
+                            <span class="category-card-link">Shop Now <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                    
+                    {% if user.is_staff %}
+                    <div class="category-admin-actions">
+                        <a href="{% url 'edit_category' category_id=category.id %}" class="btn btn-sm btn-outline">Edit</a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="no-categories">
+                    <div class="empty-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3>No Categories Found</h3>
+                    <p>There are no categories available right now.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="browsing-history">
+    <div class="container">
+        <div class="section-header text-center" data-aos="fade-up">
+            <h2>Recently Viewed</h2>
+            <p>Continue browsing where you left off</p>
+        </div>
+        
+        <div class="products-slider" data-aos="fade-up">
+            <div class="product-card">
+                <div class="product-card-img">
+                    <a href="#">
+                        <img src="https://pixabay.com/get/g86aa9cd75ff2a28ef5a660a9e250a73892a94c6f9110e1de58f766195ae8aee2fbdba179d87802db30ed048f57ddf66c292f637245e397c3658105e71f4999ca_1280.jpg" alt="Product">
+                    </a>
+                    <div class="product-actions">
+                        <button type="button" class="action-btn wishlist-btn" title="Add to Wishlist">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button type="button" class="action-btn cart-btn" title="Add to Cart">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <a href="#" class="action-btn view-btn" title="Quick View">
+                            <i class="far fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="#">Modern Wristwatch</a></h3>
+                    <div class="product-price">
+                        <span class="price">$129.99</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-card-img">
+                    <span class="product-badge sale">Sale</span>
+                    <a href="#">
+                        <img src="https://pixabay.com/get/gd7942cfee8f77142b66e7e26bc8bc9d228ac10045c778f8142ed5927120435600beff4d70988080eff89109ca72322a6880cb89c5a224a6a888fd07cb4deb1b5_1280.jpg" alt="Product">
+                    </a>
+                    <div class="product-actions">
+                        <button type="button" class="action-btn wishlist-btn" title="Add to Wishlist">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button type="button" class="action-btn cart-btn" title="Add to Cart">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <a href="#" class="action-btn view-btn" title="Quick View">
+                            <i class="far fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="#">Digital Camera</a></h3>
+                    <div class="product-price">
+                        <span class="price">$349.99</span>
+                        <span class="old-price">$399.99</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-card-img">
+                    <span class="product-badge new">New</span>
+                    <a href="#">
+                        <img src="https://pixabay.com/get/g2e22e34fc65145528a208c434d03219259bfe0a830becb52b603964ce629f5b74c6c318796e2aa0e12d54a97eac85894bbe43c534d960d9d91dfa38df203934b_1280.jpg" alt="Product">
+                    </a>
+                    <div class="product-actions">
+                        <button type="button" class="action-btn wishlist-btn" title="Add to Wishlist">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button type="button" class="action-btn cart-btn" title="Add to Cart">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <a href="#" class="action-btn view-btn" title="Quick View">
+                            <i class="far fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="#">Luxury Handbag</a></h3>
+                    <div class="product-price">
+                        <span class="price">$249.99</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-card-img">
+                    <a href="#">
+                        <img src="https://pixabay.com/get/gccd26e3fd753b037b447e1a3ece93af62eb3ec455b1582b028d9fec7f6163bc70b67f27b3b49685a1195ac18cacadc5cdaea989f869c53c7c7e89f20ff1ce777_1280.jpg" alt="Product">
+                    </a>
+                    <div class="product-actions">
+                        <button type="button" class="action-btn wishlist-btn" title="Add to Wishlist">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button type="button" class="action-btn cart-btn" title="Add to Cart">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                        <a href="#" class="action-btn view-btn" title="Quick View">
+                            <i class="far fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="#">Smart Speaker</a></h3>
+                    <div class="product-price">
+                        <span class="price">$89.99</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Category search functionality
+        const searchInput = document.getElementById('category-search');
+        const categoryCards = document.querySelectorAll('.category-card');
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                categoryCards.forEach(card => {
+                    const categoryName = card.querySelector('h3').textContent.toLowerCase();
+                    const categoryDesc = card.querySelector('p') ? 
+                                        card.querySelector('p').textContent.toLowerCase() : '';
+                    
+                    if (categoryName.includes(searchTerm) || categoryDesc.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Check if no results
+                const visibleCards = document.querySelectorAll('.category-card[style="display: block"]');
+                const noResults = document.querySelector('.no-results');
+                
+                if (visibleCards.length === 0 && searchTerm !== '') {
+                    if (!noResults) {
+                        const noResultsDiv = document.createElement('div');
+                        noResultsDiv.className = 'no-results';
+                        noResultsDiv.innerHTML = `
+                            <div class="empty-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h3>No Categories Found</h3>
+                            <p>No categories match your search: "${searchTerm}"</p>
+                        `;
+                        
+                        const categoriesGrid = document.querySelector('.categories-grid');
+                        categoriesGrid.appendChild(noResultsDiv);
+                    }
+                } else if (noResults) {
+                    noResults.remove();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

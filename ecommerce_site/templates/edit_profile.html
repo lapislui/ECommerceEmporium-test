@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - StyleShop{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1>Edit Profile</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'profile' %}">My Account</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="edit-profile-section">
+    <div class="container">
+        <div class="account-wrapper">
+            <div class="account-sidebar" data-aos="fade-right">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <h3>{{ user.get_full_name|default:user.username }}</h3>
+                        <p>{{ user.email }}</p>
+                    </div>
+                </div>
+                
+                <ul class="account-menu">
+                    <li><a href="{% url 'profile' %}"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li><a href="{% url 'orders' %}"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                    <li><a href="{% url 'wishlist' %}"><i class="fas fa-heart"></i> My Wishlist</a></li>
+                    <li class="active"><a href="{% url 'edit_profile' %}"><i class="fas fa-edit"></i> Edit Profile</a></li>
+                    <li><a href="{% url 'change_email' %}"><i class="fas fa-envelope"></i> Change Email</a></li>
+                    <li><a href="{% url 'password_change' %}"><i class="fas fa-lock"></i> Change Password</a></li>
+                    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+            
+            <div class="account-content" data-aos="fade-left">
+                <div class="section-header">
+                    <h2>Edit Profile Information</h2>
+                </div>
+                
+                <form method="POST" class="profile-form">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="form-section">
+                        <h3>Personal Information</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="id_first_name">First Name</label>
+                                <input type="text" name="first_name" id="id_first_name" value="{{ form.first_name.value|default:'' }}" class="form-control" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="id_last_name">Last Name</label>
+                                <input type="text" name="last_name" id="id_last_name" value="{{ form.last_name.value|default:'' }}" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_phone">Phone Number</label>
+                            {{ form.phone }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Shipping Address</h3>
+                        
+                        <div class="form-group">
+                            <label for="id_address">Address</label>
+                            {{ form.address }}
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="id_city">City</label>
+                                {{ form.city }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="id_state">State/Province</label>
+                                {{ form.state }}
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="id_postal_code">Postal Code</label>
+                                {{ form.postal_code }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="id_country">Country</label>
+                                {{ form.country }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{% url 'profile' %}" class="btn btn-outline">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add classes to form fields
+        const formFields = [
+            'id_phone', 'id_address', 'id_city', 
+            'id_state', 'id_postal_code', 'id_country'
+        ];
+        
+        formFields.forEach(field => {
+            const element = document.getElementById(field);
+            if (element) {
+                element.classList.add('form-control');
+            }
+        });
+        
+        // Form validation
+        const profileForm = document.querySelector('.profile-form');
+        if (profileForm) {
+            profileForm.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                // Required fields validation
+                const firstName = document.getElementById('id_first_name');
+                const lastName = document.getElementById('id_last_name');
+                
+                if (!firstName.value.trim()) {
+                    firstName.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    firstName.classList.remove('is-invalid');
+                }
+                
+                if (!lastName.value.trim()) {
+                    lastName.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    lastName.classList.remove('is-invalid');
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    
+                    // Show error message
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'alert alert-danger';
+                    errorMessage.textContent = 'Please fill in all required fields correctly.';
+                    
+                    // Insert at the top of the form
+                    profileForm.insertBefore(errorMessage, profileForm.firstChild);
+                    
+                    // Scroll to error message
+                    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Remove message after 5 seconds
+                    setTimeout(() => {
+                        errorMessage.remove();
+                    }, 5000);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,135 @@
+### 🛒 *Replit Prompt: Build a Professional eCommerce Site (Django + HTML/CSS/JS only)*
+
+#### 🎯 Objective:
+
+Build a *fully functional, professional, and mobile-responsive eCommerce website* using:
+
+* ✅ *Django (Python) for backend*
+* ✅ *HTML, CSS, JavaScript (vanilla) for frontend*
+* ❌ *Do NOT use* React, TypeScript, npm, or any frontend frameworks
+* ✅ Use *pure CSS/JS or CDN-based libraries only (no npm)*
+
+---
+
+### 💡 Site Structure (Must Include):
+
+Use the following page templates (as per structure.txt):
+
+* *🛍 E-Commerce Pages*:
+
+  * home.html, product_list.html, product_detail.html, cart.html, checkout.html, order_success.html, orders.html, track_order.html
+* *👤 User Management*:
+
+  * login.html, signup.html, profile.html, edit_profile.html, change_email.html, password_change.html, password_reset.html (+ confirmation pages)
+* *📦 Categories & Products*:
+
+  * categories.html, category_detail.html, add_product.html, edit_product.html, add_category.html, edit_category.html
+* *🎯 Features*:
+
+  * wishlist.html, search_results.html, product_reviews.html
+  * featured_products.html, best_sellers.html, new_arrivals.html, on_sale_products.html
+* *📬 Info Pages*:
+
+  * about.html, contact.html, faq.html, terms_and_conditions.html, privacy_policy.html, newsletter_signup.html, returns.html, support.html
+* *📊 Admin & Reports*:
+
+  * dashboard.html, report_page.html
+
+---
+
+### ⚙ Required Functionalities:
+
+* User Authentication (signup, login, password reset, profile management)
+* Product Catalog (view, search, filter, categories)
+* Shopping Cart and Checkout
+* Order Tracking, Wishlist
+* Admin CRUD for products & categories
+* Newsletter Signup + Notifications
+* Mobile Responsive Design (must work beautifully on all screen sizes)
+
+---
+
+### 🎨 UI & Animation Requirements:
+
+✅ Make the site look *modern and polished* with:
+
+* Smooth *CSS animations* (hover effects, transitions)
+* Interactive *JavaScript UI components* (pop-ups, collapsible menus, live search)
+* *Mobile-first* responsive design using media queries
+
+📌 Add elegant effects using *CDNs only* (no npm):
+
+#### Example: Add scroll animations using AOS (Animate On Scroll)
+
+Include in your base.html:
+
+html
+<!-- AOS CSS -->
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+<!-- AOS JS -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    AOS.init();
+  });
+</script>
+
+
+Then add animations in your HTML:
+
+html
+<div data-aos="fade-up">Animated Element</div>
+
+
+💡 You may also use:
+
+* [Font Awesome CDN](https://cdnjs.com/libraries/font-awesome) for icons
+* [Google Fonts](https://fonts.google.com/) for typography
+
+---
+
+### 🔧 Setup Instructions (Replit/Django):
+
+bash
+# Create Django project and app
+django-admin startproject ecommerce_site
+cd ecommerce_site
+python manage.py startapp store
+
+# Configure settings.py (templates, static files)
+# Map all required HTML templates
+# Implement URLs, views, models accordingly
+
+
+---
+
+### 📱 Responsiveness Checklist:
+
+Test your site with browser dev tools on:
+
+* iPhone 14 Pro
+* iPad
+* Galaxy Fold
+* Small desktops
+* Full HD monitors
+
+---
+
+### 🚫 Do NOT Use:
+
+* React, Vue, Angular
+* TypeScript
+* npm, yarn
+* Bootstrap or Tailwind (unless you use CDN and get approval)
+* jQuery (prefer vanilla JS)
+
+---
+
+### 📤 Submission Checklist:
+
+* [ ] All templates implemented from structure.txt
+* [ ] Functional product, user, and cart flow
+* [ ] Admin features working
+* [ ] Beautiful animations and polished UI (no plain HTML)
+* [ ] 100% mobile responsive
+* [ ] No npm, no React, only Django + HTML/CSS/JS

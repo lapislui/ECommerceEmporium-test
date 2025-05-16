@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - StyleShop{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1>Create Account</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Sign Up</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="signup-section">
+    <div class="container">
+        <div class="auth-wrapper" data-aos="fade-up">
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h2>Create Your Account</h2>
+                    <p>Join StyleShop and enjoy exclusive benefits</p>
+                </div>
+                
+                <form method="POST" class="auth-form">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="id_first_name">First Name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.first_name.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="id_last_name">Last Name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.last_name.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_username">Username</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.username.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_email">Email Address</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.email.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_password1">Password</label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.password1.errors.0 }}
+                        </div>
+                        {% endif %}
+                        <div class="password-help">
+                            <small>
+                                <ul>
+                                    <li>Your password can't be too similar to your other personal information.</li>
+                                    <li>Your password must contain at least 8 characters.</li>
+                                    <li>Your password can't be a commonly used password.</li>
+                                    <li>Your password can't be entirely numeric.</li>
+                                </ul>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_password2">Confirm Password</label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.password2.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group terms-policy">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="agree" required>
+                            <span class="checkmark"></span>
+                            I agree to the <a href="{% url 'terms_and_conditions' %}">Terms & Conditions</a> and <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                    </div>
+                    
+                    <div class="auth-divider">
+                        <span>OR</span>
+                    </div>
+                    
+                    <div class="social-login">
+                        <button type="button" class="btn btn-social btn-facebook">
+                            <i class="fab fa-facebook-f"></i> Sign Up with Facebook
+                        </button>
+                        <button type="button" class="btn btn-social btn-google">
+                            <i class="fab fa-google"></i> Sign Up with Google
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+            </div>
+        </div>
+        
+        <div class="auth-benefits" data-aos="fade-left">
+            <h3>Benefits of Creating an Account</h3>
+            <div class="benefits-list">
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="benefit-content">
+                        <h4>Faster Checkout</h4>
+                        <p>Save your information for a seamless checkout experience.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="benefit-content">
+                        <h4>Order History</h4>
+                        <p>View and track all your orders in one place.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="benefit-content">
+                        <h4>Wishlist</h4>
+                        <p>Save items you love for later purchase.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div class="benefit-content">
+                        <h4>Exclusive Offers</h4>
+                        <p>Get access to special discounts and promotions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add classes and attributes to form inputs
+        const formInputs = [
+            { id: 'id_first_name', placeholder: 'Enter your first name', required: true },
+            { id: 'id_last_name', placeholder: 'Enter your last name', required: true },
+            { id: 'id_username', placeholder: 'Choose a username', required: true },
+            { id: 'id_email', placeholder: 'Enter your email address', required: true },
+            { id: 'id_password1', placeholder: 'Choose a password', required: true },
+            { id: 'id_password2', placeholder: 'Confirm your password', required: true }
+        ];
+        
+        formInputs.forEach(input => {
+            const element = document.getElementById(input.id);
+            if (element) {
+                element.classList.add('form-control');
+                if (input.placeholder) element.setAttribute('placeholder', input.placeholder);
+                if (input.required) element.setAttribute('required', 'required');
+            }
+        });
+        
+        // Password strength indicator
+        const password1 = document.getElementById('id_password1');
+        if (password1) {
+            // Create strength indicator
+            const strengthIndicator = document.createElement('div');
+            strengthIndicator.className = 'password-strength';
+            strengthIndicator.innerHTML = `
+                <div class="strength-bar">
+                    <div class="strength-level"></div>
+                </div>
+                <div class="strength-text">Password strength: <span>Weak</span></div>
+            `;
+            
+            // Insert after password field
+            password1.parentNode.insertBefore(strengthIndicator, password1.nextSibling);
+            
+            // Strength level element
+            const strengthLevel = strengthIndicator.querySelector('.strength-level');
+            const strengthText = strengthIndicator.querySelector('.strength-text span');
+            
+            // Check password strength on input
+            password1.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                if (password.length >= 8) strength += 25;
+                if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 25;
+                if (password.match(/\d/)) strength += 25;
+                if (password.match(/[^a-zA-Z\d]/)) strength += 25;
+                
+                // Update strength indicator
+                strengthLevel.style.width = strength + '%';
+                
+                // Update text and color based on strength
+                if (strength <= 25) {
+                    strengthLevel.style.backgroundColor = '#ff4d4d';
+                    strengthText.textContent = 'Weak';
+                } else if (strength <= 50) {
+                    strengthLevel.style.backgroundColor = '#ffa64d';
+                    strengthText.textContent = 'Fair';
+                } else if (strength <= 75) {
+                    strengthLevel.style.backgroundColor = '#ffff4d';
+                    strengthText.textContent = 'Good';
+                } else {
+                    strengthLevel.style.backgroundColor = '#4dff4d';
+                    strengthText.textContent = 'Strong';
+                }
+            });
+        }
+        
+        // Password match check
+        const password2 = document.getElementById('id_password2');
+        if (password1 && password2) {
+            // Create match indicator
+            const matchIndicator = document.createElement('div');
+            matchIndicator.className = 'password-match';
+            
+            // Insert after confirm password field
+            password2.parentNode.insertBefore(matchIndicator, password2.nextSibling);
+            
+            // Check passwords match on input
+            password2.addEventListener('input', function() {
+                if (password1.value && this.value) {
+                    if (password1.value === this.value) {
+                        matchIndicator.textContent = 'Passwords match';
+                        matchIndicator.style.color = '#4dff4d';
+                        matchIndicator.style.display = 'block';
+                    } else {
+                        matchIndicator.textContent = 'Passwords do not match';
+                        matchIndicator.style.color = '#ff4d4d';
+                        matchIndicator.style.display = 'block';
+                    }
+                } else {
+                    matchIndicator.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

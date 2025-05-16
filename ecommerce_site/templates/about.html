@@ -1,0 +1,478 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - StyleShop{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <h1>About Us</h1>
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item active">About Us</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- About Section -->
+<section class="about-section">
+    <div class="container">
+        <div class="about-content">
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1573855619003-97b4799dcd8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhc2hpb24lMjBzdG9yZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60" alt="StyleShop Store">
+            </div>
+            <div class="about-text">
+                <h2>Our Story</h2>
+                <p>
+                    StyleShop was founded in 2015 with a simple mission: to provide high-quality fashion at affordable prices. 
+                    What began as a small boutique in New York has grown into an international brand with a strong online presence.
+                </p>
+                <p>
+                    We believe that everyone deserves to look and feel their best without breaking the bank. That's why we work 
+                    directly with manufacturers to cut out the middlemen and pass the savings on to our customers.
+                </p>
+                <p>
+                    Our team of fashion experts carefully curates each collection to ensure that we're always offering the latest 
+                    trends and timeless classics that will keep you looking stylish season after season.
+                </p>
+            </div>
+        </div>
+        
+        <div class="about-values">
+            <h2 class="text-center">Our Values</h2>
+            <div class="values-grid">
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Sustainability</h3>
+                    <p>We're committed to reducing our environmental impact by using eco-friendly materials and packaging.</p>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <h3>Ethical Practices</h3>
+                    <p>We ensure fair wages and safe working conditions throughout our supply chain.</p>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3>Quality</h3>
+                    <p>We never compromise on quality, ensuring that each item meets our high standards.</p>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Inclusivity</h3>
+                    <p>We design for everyone, embracing diversity in sizes, styles, and preferences.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="about-team">
+            <h2 class="text-center">Meet Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Team Member">
+                    </div>
+                    <h3>Sarah Johnson</h3>
+                    <p class="team-role">Founder & CEO</p>
+                    <p>With over 15 years in the fashion industry, Sarah's vision drives StyleShop forward.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="https://randomuser.me/api/portraits/men/44.jpg" alt="Team Member">
+                    </div>
+                    <h3>Michael Chen</h3>
+                    <p class="team-role">Creative Director</p>
+                    <p>Michael's eye for design and trend forecasting keeps our collections fresh and exciting.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Team Member">
+                    </div>
+                    <h3>Amara Rodriguez</h3>
+                    <p class="team-role">Head of Operations</p>
+                    <p>Amara ensures that everything runs smoothly from production to delivery.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Team Member">
+                    </div>
+                    <h3>James Wilson</h3>
+                    <p class="team-role">Customer Experience</p>
+                    <p>James and his team are dedicated to providing exceptional service to our customers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+    <div class="container">
+        <h2 class="text-center">What Our Customers Say</h2>
+        <div class="testimonials-slider">
+            <div class="testimonial">
+                <div class="testimonial-content">
+                    <p>"StyleShop has completely transformed my wardrobe. The quality is amazing and the prices are unbeatable!"</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-photo">
+                        <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Customer">
+                    </div>
+                    <div class="author-info">
+                        <h4>Emma Thompson</h4>
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial">
+                <div class="testimonial-content">
+                    <p>"The customer service is outstanding. When I had an issue with my order, they resolved it immediately."</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-photo">
+                        <img src="https://randomuser.me/api/portraits/men/34.jpg" alt="Customer">
+                    </div>
+                    <div class="author-info">
+                        <h4>David Cooper</h4>
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial">
+                <div class="testimonial-content">
+                    <p>"I love that StyleShop offers sustainable fashion options. It feels good to shop with a company that cares."</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-photo">
+                        <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Customer">
+                    </div>
+                    <div class="author-info">
+                        <h4>Sophia Martinez</h4>
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* About Page Styles */
+.page-header {
+    background-color: #f8f9fa;
+    padding: 50px 0;
+    margin-bottom: 60px;
+}
+
+.page-header h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.breadcrumb-nav {
+    margin-top: 10px;
+}
+
+.breadcrumb {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.breadcrumb-item {
+    display: inline-block;
+    font-size: 14px;
+}
+
+.breadcrumb-item:not(:first-child):before {
+    content: "/";
+    padding: 0 10px;
+    color: #ccc;
+}
+
+.breadcrumb-item a {
+    color: #666;
+}
+
+.breadcrumb-item.active {
+    color: #ff5e5e;
+}
+
+.about-section {
+    padding-bottom: 80px;
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    margin-bottom: 80px;
+    align-items: center;
+}
+
+.about-image img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.about-text h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.about-text h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background-color: #ff5e5e;
+}
+
+.about-text p {
+    margin-bottom: 20px;
+    line-height: 1.8;
+    color: #666;
+}
+
+.about-values, .about-team {
+    margin-bottom: 80px;
+}
+
+.about-values h2, .about-team h2 {
+    margin-bottom: 40px;
+    font-size: 32px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-center:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background-color: #ff5e5e;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.value-item {
+    text-align: center;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.value-item:hover {
+    transform: translateY(-10px);
+}
+
+.value-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #fff1f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 24px;
+    color: #ff5e5e;
+}
+
+.value-item h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.value-item p {
+    color: #666;
+    font-size: 14px;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.team-member {
+    text-align: center;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-10px);
+}
+
+.team-photo {
+    height: 250px;
+    overflow: hidden;
+}
+
+.team-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.team-member h3 {
+    margin: 20px 0 5px;
+    font-size: 18px;
+}
+
+.team-role {
+    color: #ff5e5e;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.team-member p:not(.team-role) {
+    padding: 0 20px 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.testimonials-section {
+    background-color: #f8f9fa;
+    padding: 80px 0;
+}
+
+.testimonials-slider {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.testimonial {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.testimonial-content {
+    margin-bottom: 20px;
+}
+
+.testimonial-content p {
+    font-style: italic;
+    color: #666;
+    line-height: 1.8;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+}
+
+.author-photo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 15px;
+}
+
+.author-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.author-info h4 {
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.stars {
+    color: #ffc107;
+    font-size: 12px;
+}
+
+@media (max-width: 992px) {
+    .about-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .values-grid,
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .testimonials-slider {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .values-grid,
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header {
+        padding: 30px 0;
+        margin-bottom: 40px;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - StyleShop{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1>My Profile</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">My Account</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="profile-section">
+    <div class="container">
+        <div class="account-wrapper">
+            <div class="account-sidebar" data-aos="fade-right">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <h3>{{ user.get_full_name|default:user.username }}</h3>
+                        <p>{{ user.email }}</p>
+                    </div>
+                </div>
+                
+                <ul class="account-menu">
+                    <li class="active"><a href="{% url 'profile' %}"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li><a href="{% url 'orders' %}"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                    <li><a href="{% url 'wishlist' %}"><i class="fas fa-heart"></i> My Wishlist</a></li>
+                    <li><a href="{% url 'edit_profile' %}"><i class="fas fa-edit"></i> Edit Profile</a></li>
+                    <li><a href="{% url 'change_email' %}"><i class="fas fa-envelope"></i> Change Email</a></li>
+                    <li><a href="{% url 'password_change' %}"><i class="fas fa-lock"></i> Change Password</a></li>
+                    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+            
+            <div class="account-content" data-aos="fade-left">
+                <div class="section-header">
+                    <h2>Account Information</h2>
+                    <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-outline">Edit Profile</a>
+                </div>
+                
+                <div class="profile-info">
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <h3>Personal Information</h3>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="info-item">
+                                <span class="info-label">Full Name:</span>
+                                <span class="info-value">{{ user.get_full_name }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Username:</span>
+                                <span class="info-value">{{ user.username }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Email:</span>
+                                <span class="info-value">{{ user.email }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Phone:</span>
+                                <span class="info-value">{{ profile.phone|default:'Not provided' }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Member Since:</span>
+                                <span class="info-value">{{ user.date_joined|date:"F d, Y" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <h3>Shipping Address</h3>
+                        </div>
+                        <div class="info-card-body">
+                            {% if profile.address %}
+                            <div class="info-item">
+                                <span class="info-label">Address:</span>
+                                <span class="info-value">{{ profile.address }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">City:</span>
+                                <span class="info-value">{{ profile.city }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">State:</span>
+                                <span class="info-value">{{ profile.state }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Postal Code:</span>
+                                <span class="info-value">{{ profile.postal_code }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Country:</span>
+                                <span class="info-value">{{ profile.country }}</span>
+                            </div>
+                            {% else %}
+                            <div class="no-info">
+                                <p>No shipping address provided yet.</p>
+                                <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-outline">Add Address</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-header">
+                    <h2>Recent Orders</h2>
+                    <a href="{% url 'orders' %}" class="btn btn-sm btn-outline">View All Orders</a>
+                </div>
+                
+                {% if orders %}
+                <div class="recent-orders">
+                    <div class="orders-table-header">
+                        <div class="order-header-item order-id">Order ID</div>
+                        <div class="order-header-item order-date">Date</div>
+                        <div class="order-header-item order-status">Status</div>
+                        <div class="order-header-item order-total">Total</div>
+                        <div class="order-header-item order-actions">Actions</div>
+                    </div>
+                    
+                    {% for order in orders %}
+                    <div class="order-item">
+                        <div class="order-info order-id">
+                            <span class="label">Order ID:</span>
+                            <span class="value">#{{ order.id }}</span>
+                        </div>
+                        <div class="order-info order-date">
+                            <span class="label">Date:</span>
+                            <span class="value">{{ order.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="order-info order-status">
+                            <span class="label">Status:</span>
+                            <span class="value status-badge status-{{ order.status }}">{{ order.status|title }}</span>
+                        </div>
+                        <div class="order-info order-total">
+                            <span class="label">Total:</span>
+                            <span class="value">${{ order.total_paid }}</span>
+                        </div>
+                        <div class="order-info order-actions">
+                            <a href="{% url 'track_order' order_id=order.id %}" class="btn btn-sm btn-outline">View Details</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-orders" data-aos="fade-up">
+                    <div class="empty-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <h3>No Orders Yet</h3>
+                    <p>You haven't placed any orders yet. Start shopping to make your first purchase!</p>
+                    <a href="{% url 'product_list' %}" class="btn btn-primary">Shop Now</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

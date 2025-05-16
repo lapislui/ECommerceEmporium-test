@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+
+{% block title %}StyleShop - Your Fashion Destination{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-slider">
+    <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/5872361/pexels-photo-5872361.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');">
+        <div class="container">
+            <div class="hero-content" data-aos="fade-up">
+                <h1>Summer Collection</h1>
+                <p>Discover the latest trends for the season</p>
+                <a href="{% url 'product_list' %}" class="btn btn-primary">Shop Now</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="category-boxes">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>Shop by Category</h2>
+        </div>
+        
+        <div class="category-grid">
+            {% for category in categories_list %}
+                {% if forloop.counter <= 4 %}
+                <div class="category-box" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
+                    <img src="{{ category.image_url|default:'https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }}" alt="{{ category.name }}">
+                    <div class="category-box-content">
+                        <h3>{{ category.name }}</h3>
+                        <p>Shop the collection</p>
+                    </div>
+                    <a href="{% url 'category_detail' slug=category.slug %}" class="category-link"></a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="featured-products">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>Featured Products</h2>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in featured_products %}
+            <div class="product-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
+                <div class="product-card-img">
+                    {% if product.is_new %}
+                    <span class="product-badge new">New</span>
+                    {% endif %}
+                    {% if product.is_on_sale %}
+                    <span class="product-badge sale">Sale</span>
+                    {% endif %}
+                    <a href="{% url 'product_detail' slug=product.slug %}">
+                        <img src="{{ product.image_url|default:'https://images.pexels.com/photos/4452526/pexels-photo-4452526.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }}" alt="{{ product.name }}">
+                    </a>
+                    <div class="product-actions">
+                        <form action="{% url 'add_to_wishlist' product_id=product.id %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn wishlist-btn" title="Add to Wishlist">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </form>
+                        <form action="{% url 'cart_add' product_id=product.id %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="action-btn cart-btn" title="Add to Cart">
+                                <i class="fas fa-shopping-bag"></i>
+                            </button>
+                        </form>
+                        <a href="{% url 'product_detail' slug=product.slug %}" class="action-btn view-btn" title="Quick View">
+                            <i class="far fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="{% url 'product_detail' slug=product.slug %}">{{ product.name }}</a></h3>
+                    <div class="product-price">
+                        {% if product.discount_price %}
+                        <span class="price">${{ product.discount_price }}</span>
+                        <span class="old-price">${{ product.price }}</span>
+                        {% else %}
+                        <span class="price">${{ product.price }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-products text-center" style="grid-column: 1 / -1;">
+                <p>No featured products are available at the moment. Check back soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Banner Section -->
+<section class="category-banner">
+    <div class="container">
+        <div class="banner-wrapper" data-aos="fade-up">
+            <div class="banner-content">
+                <h2>New Season Arrivals</h2>
+                <p>Check out our latest collection of stylish products</p>
+                <a href="{% url 'new_arrivals' %}" class="btn btn-outline">Explore Now</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="benefits-section">
+    <div class="container">
+        <div class="benefits-grid">
+            <div class="benefit-box" data-aos="fade-up">
+                <div class="benefit-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <h3>Free Shipping</h3>
+                <p>On all orders over $50</p>
+            </div>
+            
+            <div class="benefit-box" data-aos="fade-up" data-aos-delay="100">
+                <div class="benefit-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <h3>30 Days Return</h3>
+                <p>Money back guarantee</p>
+            </div>
+            
+            <div class="benefit-box" data-aos="fade-up" data-aos-delay="200">
+                <div class="benefit-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>Secure Payment</h3>
+                <p>100% secure payment</p>
+            </div>
+            
+            <div class="benefit-box" data-aos="fade-up" data-aos-delay="300">
+                <div class="benefit-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3>24/7 Support</h3>
+                <p>Dedicated support</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- New Arrivals Section -->
+<section class="new-arrivals">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>New Arrivals</h2>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in new_arrivals %}
+            <div class="product-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
+                <div class="product-card-img">
+                    <span class="product-badge new">New</span>
+                    {% if product.is_on_sale %}
+                    <span class="product-badge sale">Sale</span>
+                    {% endif %}
+                    <a href="{% url 'product_detail' slug=product.slug %}">
+                        <img src="{{ product.image_url|default:'https://images.pexels.com/photos/4452526/pexels-photo-4452526.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }}" alt="{{ product.name }}">
+                    </a>
+                    <div class="product-actions">
+                        <form action="{% url 'add_to_wishlist' product_id=product.id %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn wishlist-btn" title="Add to Wishlist">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </form>
+                        <form action="{% url 'cart_add' product_id=product.id %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="action-btn cart-btn" title="Add to Cart">
+                                <i class="fas fa-shopping-bag"></i>
+                            </button>
+                        </form>
+                        <a href="{% url 'product_detail' slug=product.slug %}" class="action-btn view-btn" title="Quick View">
+                            <i class="far fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="{% url 'product_detail' slug=product.slug %}">{{ product.name }}</a></h3>
+                    <div class="product-price">
+                        {% if product.discount_price %}
+                        <span class="price">${{ product.discount_price }}</span>
+                        <span class="old-price">${{ product.price }}</span>
+                        {% else %}
+                        <span class="price">${{ product.price }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-products text-center" style="grid-column: 1 / -1;">
+                <p>No new arrivals are available at the moment. Check back soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

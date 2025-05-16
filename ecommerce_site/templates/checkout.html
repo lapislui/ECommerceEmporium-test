@@ -1,0 +1,349 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - StyleShop{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1>Checkout</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'cart_detail' %}">Cart</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="checkout-section">
+    <div class="container">
+        <div class="checkout-process-steps" data-aos="fade-up">
+            <div class="process-step active">
+                <span class="step-number">1</span>
+                <span class="step-label">Shopping Cart</span>
+            </div>
+            <div class="process-step active">
+                <span class="step-number">2</span>
+                <span class="step-label">Checkout</span>
+            </div>
+            <div class="process-step">
+                <span class="step-number">3</span>
+                <span class="step-label">Order Complete</span>
+            </div>
+        </div>
+        
+        <form action="{% url 'checkout' %}" method="POST" class="checkout-form">
+            {% csrf_token %}
+            <div class="checkout-wrapper" data-aos="fade-up">
+                <div class="checkout-form-wrapper">
+                    <div class="checkout-form-section">
+                        <h3>Billing Details</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="id_first_name">First Name <span class="required">*</span></label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="id_last_name">Last Name <span class="required">*</span></label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_email">Email Address <span class="required">*</span></label>
+                            {{ form.email }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_phone">Phone <span class="required">*</span></label>
+                            {{ form.phone }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_address">Address <span class="required">*</span></label>
+                            {{ form.address }}
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="id_city">City <span class="required">*</span></label>
+                                {{ form.city }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="id_state">State <span class="required">*</span></label>
+                                {{ form.state }}
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="id_postal_code">Postal Code <span class="required">*</span></label>
+                                {{ form.postal_code }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="id_country">Country <span class="required">*</span></label>
+                                {{ form.country }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-form-section">
+                        <h3>Shipping Method</h3>
+                        <div class="shipping-methods">
+                            {% for radio in form.shipping_method %}
+                            <div class="shipping-method">
+                                {{ radio.tag }}
+                                <label for="{{ radio.id_for_label }}">
+                                    <span class="shipping-method-details">
+                                        {% if "Standard" in radio.choice_label %}
+                                        <span class="shipping-icon"><i class="fas fa-truck"></i></span>
+                                        <span class="shipping-title">Standard Shipping</span>
+                                        <span class="shipping-time">5-7 business days</span>
+                                        {% else %}
+                                        <span class="shipping-icon"><i class="fas fa-shipping-fast"></i></span>
+                                        <span class="shipping-title">Express Shipping</span>
+                                        <span class="shipping-time">2-3 business days</span>
+                                        {% endif %}
+                                    </span>
+                                    <span class="shipping-price">{{ radio.choice_label|slice:"16:" }}</span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-form-section">
+                        <h3>Payment Information</h3>
+                        <div class="payment-methods">
+                            <div class="payment-method">
+                                <input type="radio" name="payment_method" id="payment_credit_card" value="credit_card" checked>
+                                <label for="payment_credit_card">
+                                    <span class="payment-method-details">
+                                        <span class="payment-icon"><i class="far fa-credit-card"></i></span>
+                                        <span class="payment-title">Credit / Debit Card</span>
+                                    </span>
+                                    <span class="payment-providers">
+                                        <i class="fab fa-cc-visa"></i>
+                                        <i class="fab fa-cc-mastercard"></i>
+                                        <i class="fab fa-cc-amex"></i>
+                                        <i class="fab fa-cc-discover"></i>
+                                    </span>
+                                </label>
+                                
+                                <div class="payment-form">
+                                    <div class="form-group">
+                                        <label for="card_number">Card Number</label>
+                                        <input type="text" id="card_number" placeholder="**** **** **** ****" class="form-control">
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="card_expiry">Expiry Date</label>
+                                            <input type="text" id="card_expiry" placeholder="MM/YY" class="form-control">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="card_cvc">CVC</label>
+                                            <input type="text" id="card_cvc" placeholder="CVC" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-method">
+                                <input type="radio" name="payment_method" id="payment_paypal" value="paypal">
+                                <label for="payment_paypal">
+                                    <span class="payment-method-details">
+                                        <span class="payment-icon"><i class="fab fa-paypal"></i></span>
+                                        <span class="payment-title">PayPal</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="checkout-form-section">
+                        <h3>Additional Information</h3>
+                        <div class="form-group">
+                            <label for="id_order_notes">Order Notes (optional)</label>
+                            {{ form.order_notes }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="checkout-sidebar">
+                    <div class="order-summary">
+                        <h3>Order Summary</h3>
+                        
+                        <div class="order-summary-products">
+                            {% for item in cart %}
+                            <div class="order-product">
+                                <div class="order-product-image">
+                                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+                                    <span class="order-product-quantity">{{ item.quantity }}</span>
+                                </div>
+                                <div class="order-product-info">
+                                    <h4>{{ item.product.name }}</h4>
+                                    <span class="order-product-price">${{ item.price }}</span>
+                                </div>
+                                <div class="order-product-total">
+                                    ${{ item.total_price }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="order-summary-totals">
+                            <div class="summary-item">
+                                <span class="label">Subtotal:</span>
+                                <span class="value">${{ cart.get_total_price }}</span>
+                            </div>
+                            <div class="summary-item shipping">
+                                <span class="label">Shipping:</span>
+                                <span class="value shipping-value">Select shipping method</span>
+                            </div>
+                            <div class="summary-divider"></div>
+                            <div class="summary-item total">
+                                <span class="label">Total:</span>
+                                <span class="value total-value">${{ cart.get_total_price }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="place-order">
+                            <button type="submit" class="btn btn-primary btn-block">Place Order</button>
+                        </div>
+                        
+                        <div class="secure-checkout">
+                            <i class="fas fa-lock"></i> Secure Checkout
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/checkout.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update shipping and total based on selected shipping method
+        const shippingMethods = document.querySelectorAll('input[name="shipping_method"]');
+        const shippingValueEl = document.querySelector('.shipping-value');
+        const totalValueEl = document.querySelector('.total-value');
+        const subtotal = {{ cart.get_total_price }};
+        
+        shippingMethods.forEach(method => {
+            method.addEventListener('change', function() {
+                const shippingCost = parseFloat(this.value);
+                const total = subtotal + shippingCost;
+                
+                // Update shipping cost
+                shippingValueEl.textContent = '$' + shippingCost.toFixed(2);
+                
+                // Update total
+                totalValueEl.textContent = '$' + total.toFixed(2);
+            });
+            
+            // Trigger change event for pre-selected method
+            if (method.checked) {
+                method.dispatchEvent(new Event('change'));
+            }
+        });
+        
+        // Payment method toggle
+        const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+        const paymentForms = document.querySelectorAll('.payment-form');
+        
+        paymentMethods.forEach(method => {
+            method.addEventListener('change', function() {
+                // Hide all payment forms
+                paymentForms.forEach(form => {
+                    form.style.display = 'none';
+                });
+                
+                // Show selected payment form
+                if (this.value === 'credit_card') {
+                    document.querySelector('#payment_credit_card').parentNode.querySelector('.payment-form').style.display = 'block';
+                }
+            });
+        });
+        
+        // Form validation
+        const checkoutForm = document.querySelector('.checkout-form');
+        if (checkoutForm) {
+            checkoutForm.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                // Required fields validation
+                const requiredFields = [
+                    'id_first_name', 'id_last_name', 'id_email', 
+                    'id_phone', 'id_address', 'id_city', 
+                    'id_state', 'id_postal_code', 'id_country'
+                ];
+                
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field && !field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        isValid = false;
+                    } else if (field) {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+                
+                // Email validation
+                const emailField = document.getElementById('id_email');
+                if (emailField && emailField.value.trim()) {
+                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailPattern.test(emailField.value.trim())) {
+                        emailField.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                }
+                
+                // Credit card validation if selected
+                const creditCardMethod = document.getElementById('payment_credit_card');
+                if (creditCardMethod && creditCardMethod.checked) {
+                    const cardNumber = document.getElementById('card_number');
+                    const cardExpiry = document.getElementById('card_expiry');
+                    const cardCvc = document.getElementById('card_cvc');
+                    
+                    if (!cardNumber.value.trim() || !cardExpiry.value.trim() || !cardCvc.value.trim()) {
+                        if (!cardNumber.value.trim()) cardNumber.classList.add('is-invalid');
+                        if (!cardExpiry.value.trim()) cardExpiry.classList.add('is-invalid');
+                        if (!cardCvc.value.trim()) cardCvc.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    
+                    // Show error message
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'alert alert-danger';
+                    errorMessage.textContent = 'Please fill in all required fields correctly.';
+                    
+                    // Insert at the top of the form
+                    const formTop = checkoutForm.querySelector('.checkout-wrapper');
+                    formTop.insertBefore(errorMessage, formTop.firstChild);
+                    
+                    // Scroll to error message
+                    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Remove message after 5 seconds
+                    setTimeout(() => {
+                        errorMessage.remove();
+                    }, 5000);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,390 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Product: {{ product.name }} - StyleShop{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1>Edit Product</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'product_detail' slug=product.slug %}">{{ product.name }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="edit-product-section">
+    <div class="container">
+        <div class="admin-wrapper" data-aos="fade-up">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Edit Product: {{ product.name }}</h2>
+                    <p>Update product information below</p>
+                </div>
+                
+                <form method="POST" class="product-form">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="form-section">
+                        <h3>Basic Information</h3>
+                        
+                        <div class="form-group">
+                            <label for="id_name">Product Name <span class="required">*</span></label>
+                            {{ form.name }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_category">Category <span class="required">*</span></label>
+                            {{ form.category }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_description">Description</label>
+                            {{ form.description }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Pricing & Inventory</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="id_price">Regular Price ($) <span class="required">*</span></label>
+                                {{ form.price }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="id_discount_price">Discount Price ($)</label>
+                                {{ form.discount_price }}
+                                <small class="form-text text-muted">Leave empty if not on sale</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_stock">Stock Quantity <span class="required">*</span></label>
+                            {{ form.stock }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Product Image</h3>
+                        
+                        <div class="form-group">
+                            <label for="id_image_url">Image URL <span class="required">*</span></label>
+                            {{ form.image_url }}
+                            <small class="form-text text-muted">Enter a valid URL for the product image</small>
+                        </div>
+                        
+                        <div class="image-preview">
+                            <p>Image Preview:</p>
+                            <div class="preview-container">
+                                <img id="image-preview" src="{{ product.image_url }}" alt="Preview">
+                                <span class="no-preview" style="display: none;">No image URL provided</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Product Status</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <div class="custom-control custom-switch">
+                                    {{ form.is_available }}
+                                    <label class="custom-control-label" for="id_is_available">Available</label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <div class="custom-control custom-switch">
+                                    {{ form.is_featured }}
+                                    <label class="custom-control-label" for="id_is_featured">Featured</label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <div class="custom-control custom-switch">
+                                    {{ form.is_bestseller }}
+                                    <label class="custom-control-label" for="id_is_bestseller">Bestseller</label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <div class="custom-control custom-switch">
+                                    {{ form.is_new }}
+                                    <label class="custom-control-label" for="id_is_new">New Arrival</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                {{ form.is_on_sale }}
+                                <label class="custom-control-label" for="id_is_on_sale">On Sale</label>
+                                <small class="form-text text-muted">Don't forget to set a discount price if this is enabled</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Product</button>
+                        <a href="{% url 'product_detail' slug=product.slug %}" class="btn btn-outline">Cancel</a>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="admin-sidebar" data-aos="fade-left">
+                <div class="sidebar-widget">
+                    <h3>Current Product Info</h3>
+                    <div class="product-info">
+                        <div class="product-image">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                        </div>
+                        <div class="product-details">
+                            <h4>{{ product.name }}</h4>
+                            <p><strong>Category:</strong> {{ product.category.name }}</p>
+                            <p><strong>Price:</strong> ${{ product.price }}</p>
+                            {% if product.discount_price %}
+                            <p><strong>Discount Price:</strong> ${{ product.discount_price }}</p>
+                            {% endif %}
+                            <p><strong>Stock:</strong> {{ product.stock }}</p>
+                            <p><strong>Status:</strong> 
+                                {% if product.is_available %}
+                                <span class="badge badge-success">Available</span>
+                                {% else %}
+                                <span class="badge badge-danger">Unavailable</span>
+                                {% endif %}
+                                
+                                {% if product.is_featured %}
+                                <span class="badge badge-info">Featured</span>
+                                {% endif %}
+                                
+                                {% if product.is_bestseller %}
+                                <span class="badge badge-primary">Bestseller</span>
+                                {% endif %}
+                                
+                                {% if product.is_new %}
+                                <span class="badge badge-warning">New Arrival</span>
+                                {% endif %}
+                                
+                                {% if product.is_on_sale %}
+                                <span class="badge badge-danger">On Sale</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-widget">
+                    <h3>Product Analytics</h3>
+                    <div class="info-content">
+                        <p><strong>Created:</strong> {{ product.created_at|date:"F d, Y" }}</p>
+                        <p><strong>Last Updated:</strong> {{ product.updated_at|date:"F d, Y" }}</p>
+                        <p><strong>Views:</strong> N/A</p>
+                        <p><strong>Orders:</strong> {{ product.order_items.count }}</p>
+                        <p><strong>Wishlists:</strong> {{ product.wishlist_set.count }}</p>
+                    </div>
+                </div>
+                
+                <div class="sidebar-widget">
+                    <h3>Direct Link</h3>
+                    <div class="info-content">
+                        <p>Product URL:</p>
+                        <div class="url-box">
+                            <input type="text" readonly value="{{ request.scheme }}://{{ request.get_host }}{% url 'product_detail' slug=product.slug %}" id="product-url">
+                            <button type="button" class="btn btn-sm btn-outline copy-btn" data-clipboard-target="#product-url">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add form control class to inputs
+        const textInputs = [
+            'id_name', 'id_description', 'id_price', 
+            'id_discount_price', 'id_stock', 'id_image_url'
+        ];
+        
+        textInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.classList.add('form-control');
+            }
+        });
+        
+        // Add select class to category field
+        const categorySelect = document.getElementById('id_category');
+        if (categorySelect) {
+            categorySelect.classList.add('form-control');
+        }
+        
+        // Customize switch inputs
+        const switchInputs = [
+            'id_is_available', 'id_is_featured', 'id_is_bestseller', 
+            'id_is_new', 'id_is_on_sale'
+        ];
+        
+        switchInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.classList.add('custom-control-input');
+            }
+        });
+        
+        // Image URL preview
+        const imageUrlInput = document.getElementById('id_image_url');
+        const imagePreview = document.getElementById('image-preview');
+        const noPreview = document.querySelector('.no-preview');
+        
+        if (imageUrlInput && imagePreview && noPreview) {
+            // Update on input
+            imageUrlInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    imagePreview.src = this.value;
+                    imagePreview.style.display = 'block';
+                    noPreview.style.display = 'none';
+                } else {
+                    imagePreview.style.display = 'none';
+                    noPreview.style.display = 'block';
+                }
+            });
+            
+            // Handle image load error
+            imagePreview.addEventListener('error', function() {
+                this.style.display = 'none';
+                noPreview.style.display = 'block';
+                noPreview.textContent = 'Invalid image URL';
+            });
+        }
+        
+        // On Sale and Discount Price logic
+        const onSaleInput = document.getElementById('id_is_on_sale');
+        const discountInput = document.getElementById('id_discount_price');
+        
+        if (onSaleInput && discountInput) {
+            // If "On Sale" is checked, make discount price required
+            onSaleInput.addEventListener('change', function() {
+                if (this.checked) {
+                    discountInput.setAttribute('required', 'required');
+                    discountInput.closest('.form-group').querySelector('label').innerHTML = 'Discount Price ($) <span class="required">*</span>';
+                } else {
+                    discountInput.removeAttribute('required');
+                    discountInput.closest('.form-group').querySelector('label').innerHTML = 'Discount Price ($)';
+                }
+            });
+            
+            // Trigger change event for initial state
+            onSaleInput.dispatchEvent(new Event('change'));
+        }
+        
+        // Copy URL functionality
+        const copyBtn = document.querySelector('.copy-btn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                const productUrl = document.getElementById('product-url');
+                productUrl.select();
+                document.execCommand('copy');
+                
+                // Change button text temporarily
+                const originalText = this.textContent;
+                this.textContent = 'Copied!';
+                this.classList.add('copied');
+                
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.classList.remove('copied');
+                }, 2000);
+            });
+        }
+        
+        // Form validation
+        const form = document.querySelector('.product-form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                const requiredFields = [
+                    'id_name', 'id_category', 'id_price', 'id_stock', 'id_image_url'
+                ];
+                
+                // Check required fields
+                requiredFields.forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input && !input.value.trim()) {
+                        input.classList.add('is-invalid');
+                        isValid = false;
+                    } else if (input) {
+                        input.classList.remove('is-invalid');
+                    }
+                });
+                
+                // Check price is a positive number
+                const priceInput = document.getElementById('id_price');
+                if (priceInput && (isNaN(parseFloat(priceInput.value)) || parseFloat(priceInput.value) <= 0)) {
+                    priceInput.classList.add('is-invalid');
+                    isValid = false;
+                }
+                
+                // Check discount price if on sale
+                if (onSaleInput && onSaleInput.checked) {
+                    if (!discountInput.value.trim() || isNaN(parseFloat(discountInput.value)) || 
+                        parseFloat(discountInput.value) <= 0 || 
+                        parseFloat(discountInput.value) >= parseFloat(priceInput.value)) {
+                        discountInput.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        discountInput.classList.remove('is-invalid');
+                    }
+                }
+                
+                // Check stock is a positive integer
+                const stockInput = document.getElementById('id_stock');
+                if (stockInput && (isNaN(parseInt(stockInput.value)) || parseInt(stockInput.value) < 0)) {
+                    stockInput.classList.add('is-invalid');
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    
+                    // Show error message
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'alert alert-danger';
+                    errorMessage.textContent = 'Please correct the errors in the form.';
+                    form.insertBefore(errorMessage, form.firstChild);
+                    
+                    // Scroll to top
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                    
+                    // Remove message after 5 seconds
+                    setTimeout(() => {
+                        errorMessage.remove();
+                    }, 5000);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

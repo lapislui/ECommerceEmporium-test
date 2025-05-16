@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}My Orders - StyleShop{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1>My Orders</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'profile' %}">My Account</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">My Orders</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="orders-section">
+    <div class="container">
+        <div class="account-wrapper">
+            <div class="account-sidebar" data-aos="fade-right">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <h3>{{ user.get_full_name|default:user.username }}</h3>
+                        <p>{{ user.email }}</p>
+                    </div>
+                </div>
+                
+                <ul class="account-menu">
+                    <li><a href="{% url 'profile' %}"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li class="active"><a href="{% url 'orders' %}"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                    <li><a href="{% url 'wishlist' %}"><i class="fas fa-heart"></i> My Wishlist</a></li>
+                    <li><a href="{% url 'edit_profile' %}"><i class="fas fa-edit"></i> Edit Profile</a></li>
+                    <li><a href="{% url 'change_email' %}"><i class="fas fa-envelope"></i> Change Email</a></li>
+                    <li><a href="{% url 'password_change' %}"><i class="fas fa-lock"></i> Change Password</a></li>
+                    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+            
+            <div class="account-content" data-aos="fade-left">
+                <div class="section-header">
+                    <h2>Order History</h2>
+                </div>
+                
+                {% if orders %}
+                <div class="orders-list">
+                    <div class="orders-table-header">
+                        <div class="order-header-item order-id">Order ID</div>
+                        <div class="order-header-item order-date">Date</div>
+                        <div class="order-header-item order-status">Status</div>
+                        <div class="order-header-item order-total">Total</div>
+                        <div class="order-header-item order-actions">Actions</div>
+                    </div>
+                    
+                    {% for order in orders %}
+                    <div class="order-item">
+                        <div class="order-info order-id">
+                            <span class="label">Order ID:</span>
+                            <span class="value">#{{ order.id }}</span>
+                        </div>
+                        <div class="order-info order-date">
+                            <span class="label">Date:</span>
+                            <span class="value">{{ order.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="order-info order-status">
+                            <span class="label">Status:</span>
+                            <span class="value status-badge status-{{ order.status }}">{{ order.status|title }}</span>
+                        </div>
+                        <div class="order-info order-total">
+                            <span class="label">Total:</span>
+                            <span class="value">${{ order.total_paid }}</span>
+                        </div>
+                        <div class="order-info order-actions">
+                            <a href="{% url 'track_order' order_id=order.id %}" class="btn btn-sm btn-outline">View Details</a>
+                        </div>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="order-products">
+                            {% for item in order.items.all %}
+                            <div class="order-product">
+                                <div class="product-image">
+                                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+                                </div>
+                                <div class="product-info">
+                                    <h4><a href="{% url 'product_detail' slug=item.product.slug %}">{{ item.product.name }}</a></h4>
+                                    <div class="product-meta">
+                                        <span class="quantity">Qty: {{ item.quantity }}</span>
+                                        <span class="price">${{ item.price }} each</span>
+                                    </div>
+                                </div>
+                                <div class="product-total">
+                                    ${{ item.get_cost }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="order-summary">
+                            <div class="summary-item">
+                                <span class="label">Subtotal:</span>
+                                <span class="value">${{ order.get_total_cost|add:"-order.shipping_cost" }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Shipping:</span>
+                                <span class="value">${{ order.shipping_cost }}</span>
+                            </div>
+                            <div class="summary-divider"></div>
+                            <div class="summary-item total">
+                                <span class="label">Total:</span>
+                                <span class="value">${{ order.total_paid }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="shipping-address">
+                            <h4>Shipping Address</h4>
+                            <p>{{ order.first_name }} {{ order.last_name }}</p>
+                            <p>{{ order.address }}</p>
+                            <p>{{ order.city }}, {{ order.state }} {{ order.postal_code }}</p>
+                            <p>{{ order.country }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-orders" data-aos="fade-up">
+                    <div class="empty-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <h3>No Orders Yet</h3>
+                    <p>You haven't placed any orders yet. Start shopping to make your first purchase!</p>
+                    <a href="{% url 'product_list' %}" class="btn btn-primary">Shop Now</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Order details toggle
+        const orderItems = document.querySelectorAll('.order-item');
+        const orderDetails = document.querySelectorAll('.order-details');
+        
+        orderItems.forEach((item, index) => {
+            item.addEventListener('click', function() {
+                // Toggle the corresponding details section
+                orderDetails[index].classList.toggle('active');
+                
+                // Add/remove the active class to the clicked item
+                this.classList.toggle('active');
+            });
+        });
+    });
+</script>
+{% endblock %}
